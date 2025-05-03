@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Kitty Guard</title>
+    <meta charset="utf-8">
+    <style>
+        /* Cute kitty-themed baby blue color palette */
+        body {
+            width: 340px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #e6f2ff;
+            color: #4a4a4a;
+            margin: 0;
+            padding: 0;
+            border: 5px solid #98c1ff;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #98c1ff;
+            color: white;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-text {
+            text-align: left;
+        }
+
+        .header-title {
+            font-size: 26px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: #4a4a4a;
+            margin-top: 3px;
+        }
+
+        .kitty-img {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background-color: #e6f2ff;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            padding: 12px;
+            background-color: white;
+            margin: 8px;
+            border-radius: 15px;
+            border: 3px dashed #c2dcff;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #6da6ff;
+        }
+
+        /* Cute toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 56px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            background-image: url('images/paw-print.png');
+            background-size: 65%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        input:checked+.slider {
+            background-color: #98c1ff;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Stats display */
+        .stats-box {
+            background-color: #e6f2ff;
+            border-radius: 12px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            border: 2px solid #c2dcff;
+        }
+
+        .count-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: #6da6ff;
+            margin-right: 12px;
+            background: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 2px solid #c2dcff;
+        }
+
+        .count-label {
+            font-size: 14px;
+            color: #5988db;
+        }
+
+        /* Slider container for tracker views */
+        .tracker-views-container {
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .tracker-views {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+            width: 200%;
+        }
+
+        .tracker-view {
+            flex: 0 0 50%;
+            width: 50%;
+        }
+
+        /* Tracker list */
+        .tracker-list {
+            background-color: #f0f7ff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #c2dcff;
+        }
+
+        .tracker-item {
+            padding: 8px;
+            border-bottom: 1px solid #c2dcff;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+        }
+
+        .tracker-item:last-child {
+            border-bottom: none;
+        }
+
+        .tracker-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+
+        /* Visualization styles */
+        .tracker-summary {
+            background-color: #f0f7ff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #c2dcff;
+            padding: 10px;
+        }
+
+        .tracker-summary-title {
+            text-align: center;
+            font-weight: bold;
+            color: #6da6ff;
+            margin-bottom: 8px;
+        }
+
+        .tracker-summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .tracker-bar-container {
+            height: 12px;
+            background-color: #e0ecff;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-grow: 1;
+            margin: 0 8px;
+        }
+
+        .tracker-bar {
+            height: 100%;
+            background-color: #98c1ff;
+            border-radius: 6px;
+        }
+
+        .tracker-count {
+            min-width: 25px;
+            text-align: right;
+            font-weight: bold;
+            color: #6da6ff;
+        }
+
+        /* Navigation arrows */
+        .view-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #c2dcff;
+            border-radius: 50%;
+            margin: 0 4px;
+            cursor: pointer;
+        }
+
+        .nav-dot.active {
+            background-color: #6da6ff;
+            transform: scale(1.2);
+        }
+
+        /* Fingerprint detection alert */
+        .fingerprint-alert {
+            margin-top: 10px;
+            background-color: #ffe6e6;
+            border: 2px solid #ffb3b3;
+            border-radius: 12px;
+            padding: 12px;
+            display: none;
+            /* Hidden by default */
+            animation: alertPulse 2s infinite;
+            text-align: center;
+        }
+
+        @keyframes alertPulse {
+            0% {
+                background-color: #ffe6e6;
+            }
+
+            50% {
+                background-color: #ffd9d9;
+            }
+
+            100% {
+                background-color: #ffe6e6;
+            }
+        }
+
+        .alert-icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .alert-text {
+            font-size: 13px;
+            color: #ff6b6b;
+        }
+
+        .alert-domain {
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* View instructions */
+        .view-instructions {
+            text-align: center;
+            font-size: 12px;
+            color: #5988db;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        #protection-status {
+            margin-top: 8px; 
+            font-weight: bold;
+            text-align: center;
+            padding: 3px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Swipe animations */
+        @keyframes slideRight {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        @keyframes slideLeft {
+            from {
+                transform: translateX(-50%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-text">
+            <div class="header-title">Kitty Guard</div>
+            <div class="header-subtitle">Protecting your paw-rivacy!</div>
+        </div>
+        <img src="images/kitty.gif" class="kitty-img" alt="Cute Kitty" id="kitty-gif">
+    </div>
+
+    <!-- Tracker Section -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">Tracker Blocker</div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="tracker-toggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="stats-box">
+            <div class="count-number" id="tracker-count">0</div>
+            <div class="count-label">trackers blocked on this page</div>
+        </div>
+
+        <div class="tracker-views-container">
+            <div class="tracker-views" id="tracker-views">
+                <!-- List View -->
+                <div class="tracker-view" id="list-view">
+                    <div class="tracker-list" id="tracker-list">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Summary View -->
+                <div class="tracker-view" id="summary-view">
+                    <div class="tracker-summary" id="tracker-summary">
+                        <div class="tracker-summary-title">Most Common Trackers</div>
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="view-nav">
+            <div class="nav-dot active" data-view="0"></div>
+            <div class="nav-dot" data-view="1"></div>
+        </div>
+    </div>
+
+    <!-- Fingerprint Section -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">Fingerprint Blocker</div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="fingerprint-toggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Fingerprint detection alert (hidden by default) -->
+        <div class="fingerprint-alert" id="fingerprint-alert">
+            <div class="alert-icon">⚠️</div>
+            <span class="alert-text">
+                Canvas fingerprinting detected on:
+                <span class="alert-domain" id="fingerprint-domain">this site</span>
+            </span>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

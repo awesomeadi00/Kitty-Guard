@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple Canvas Fingerprint Test</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        pre {
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Simple Canvas Fingerprint Test</h1>
+    <p>This test checks if canvas fingerprinting protection is working.</p>
+    <button id="runBtn">Run Test</button>
+    <pre id="output">Click "Run Test" to begin.</pre>
+
+    <script>
+        document.getElementById("runBtn").addEventListener("click", () => {
+            const output = document.getElementById("output");
+            output.textContent = "Running test...\n";
+
+            const fingerprints = [];
+
+            for (let i = 0; i < 3; i++) {
+                const canvas = document.createElement("canvas");
+                canvas.width = 300;
+                canvas.height = 50;
+                const ctx = canvas.getContext("2d");
+
+                ctx.textBaseline = "top";
+                ctx.font = "16px Arial";
+                ctx.fillStyle = "#f60";
+                ctx.fillRect(0, 0, 300, 50);
+                ctx.fillStyle = "#069";
+                ctx.fillText("Fingerprint Test", 10, 10);
+
+                fingerprints.push(canvas.toDataURL());
+            }
+
+            const [fp1, fp2, fp3] = fingerprints;
+
+            const allSame = fp1 === fp2 && fp2 === fp3;
+
+            if (allSame) {
+                output.textContent = "❌ All fingerprints are the same.\nProtection is NOT working.";
+            } else {
+                output.textContent = "✅ Fingerprints are different.\nProtection IS working!";
+            }
+        });
+    </script>
+</body>
+
+</html>
